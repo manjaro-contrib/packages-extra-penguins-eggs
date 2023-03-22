@@ -10,12 +10,13 @@ pkgdesc="A console tool that allows you to remaster your system and redistribute
 arch=('any')
 url="https://penguins-eggs.net"
 license=('GPL2')
-depends=('arch-install-scripts' 'dosfstools' 'erofs-utils' 'findutils' 'grub'
-         'jq' 'libarchive' 'libisoburn' 'lsb-release' 'lvm2' 'manjaro-tools-iso'
-         'mkinitcpio-nfs-utils' 'mtools' 'nbd' 'nodejs' 'pacman-contrib' 'parted'
-         'procps-ng' 'pv' 'python' 'rsync' 'sshfs' 'syslinux' 'squashfs-tools'
-         'xdg-utils')
-optdepends=('bash-completion: enable eggs commands automatic completion'
+depends=( 'arch-install-scripts' 'dosfstools'  'erofs-utils'  'findutils'  'grub' 
+          'jq' 'libarchive' 'libisoburn' 'lsb-release' 'lvm2' 'manjaro-tools-iso'
+          'mkinitcpio-nfs-utils' 'mtools' 'nbd' 'nodejs' 'pacman-contrib' 'parted'
+          'procps-ng' 'pv' 'python' 'rsync' 'squashfs-tools' 'sshfs' 'syslinux' 
+          'xdg-utils')
+optdepends=('bash-completion: eggs autocomplete' 
+            'zsh-autosuggestions: eggs autocomplete' 
             'calamares: system installer GUI')
 makedepends=('git' 'pnpm')
 options=('!strip')
