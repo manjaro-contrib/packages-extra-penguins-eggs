@@ -1,57 +1,85 @@
 # Maintainer: Stefano Capitani <stefano_at_manjaro_org>
+# Contributor: Piero Proietti <piero.proietti_at_gmail.com>
+# Contributor: Muflone http://www.muflone.com/contacts/english/
+# Contributor: osiixy <osiixy at gmail dot com>
 
 pkgname=penguins-eggs
-pkgver=9.1.31
+pkgver=9.4.2
 pkgrel=1
-_commit='c9439ad6203abe311089c7730a09f0ce093aa3ea'
-pkgdesc="A console utility that allows you to remaster your system and redistribute it as ISO images or via remote boot PXE."
+pkgdesc="A console tool that allows you to remaster your system and redistribute it as live images on USB sticks or via PXE"
 arch=('any')
 url="https://penguins-eggs.net"
 license=('GPL2')
-depends=('arch-install-scripts' 'erofs-utils' 'manjaro-tools-iso' 'mtools' 'nodejs' 'python' 'syslinux' 'xdg-utils')
+depends=('arch-install-scripts' 'dosfstools' 'erofs-utils' 'findutils' 'grub'
+         'jq' 'libarchive' 'libisoburn' 'lsb-release' 'lvm2' 'manjaro-tools-iso'
+         'mkinitcpio-nfs-utils' 'mtools' 'nbd' 'nodejs' 'pacman-contrib' 'parted'
+         'procps-ng' 'pv' 'python' 'rsync' 'sshfs' 'syslinux' 'squashfs-tools'
+         'xdg-utils')
+optdepends=('bash-completion: enable eggs commands automatic completion'
+            'calamares: system installer GUI')
 makedepends=('git' 'pnpm')
 conflicts=('penguins-eggs-dev')
 replaces=('penguins-eggs-dev')
 options=('!strip')
+_commit=0f116f37fe57961cdfa1865c4e9b6d1d09314b99  # v9.4.2
 source=("git+https://github.com/pieroproietti/penguins-eggs.git#commit=${_commit}")
 sha256sums=('SKIP')
 
 pkgver() {
-	cd "${srcdir}/${pkgname}"
-	grep 'version' package.json | awk 'NR==1 {print $2 }' | awk -F '"' '{print $2}'
+  cd "${srcdir}/${pkgname}"
+  grep 'version' package.json | awk 'NR==1 {print $2 }' | awk -F '"' '{print $2}'
 }
 
 build() {
-	cd "${srcdir}/${pkgname}"
-	pnpm i
-	pnpm run build
+  cd "${srcdir}/${pkgname}"
+  pnpm config set cache-dir "$srcdir/pnpm-cache"
+  pnpm i
+  pnpm build
 }
 
 package() {
-	cd ${srcdir}/${pkgname}
-	install -Dm644 package.json -t "${pkgdir}/usr/lib/${pkgname}/"
-	cp -r node_modules "${pkgdir}/usr/lib/${pkgname}/"
+  cd "${srcdir}/${pkgname}"
+  install -Dm644 package.json -t "${pkgdir}/usr/lib/${pkgname}/"
+  cp -r addons assets bin conf dist ipxe node_modules mkinitcpio scripts \
+    "${pkgdir}/usr/lib/${pkgname}/"
 
-	install -d "${pkgdir}/opt/${pkgname}"
-	cp -r addons "${pkgdir}/opt/${pkgname}/"
-	cp -r bin "${pkgdir}/opt/${pkgname}/"
-	cp -r conf "${pkgdir}/opt/${pkgname}/"
-	cp -r lib "${pkgdir}/opt/${pkgname}/"
-	cp -r mkinitcpio "${pkgdir}/opt/${pkgname}/"
-	cp -r scripts "${pkgdir}/opt/${pkgname}/"
+  # Fix permissions
+  chown root:root "${pkgdir}/usr/lib/${pkgname}/"{dist,node_modules}
 
-	# Symlink executable
-	install -d "${pkgdir}/usr/bin"
-	ln -s "/opt/${pkgname}/bin/run" "${pkgdir}/usr/bin/eggs"
+  # Package contains reference to $srcdir
+  find "${pkgdir}/usr/lib/${pkgname}" -name package.json -print0 | xargs -r -0 sed -i '/_where/d'
 
-	# Install bash completions
-	install -d "${pkgdir}/usr/share/bash-completion/completions"
-	mv "${pkgdir}/opt/${pkgname}/scripts/eggs.bash" "${pkgdir}/usr/share/bash-completion/completions/"
+  local tmppackage="$(mktemp)"
+  local pkgjson="${pkgdir}/usr/lib/${pkgname}/package.json"
+  jq '.|=with_entries(select(.key|test("_.+")|not))' "${pkgjson}" > "${tmppackage}"
+  mv "${tmppackage}" "${pkgjson}"
+  chmod 644 "${pkgjson}"
 
-	# Install man page
-	install -Dm644 manpages/doc/man/eggs.roll.gz "${pkgdir}/usr/share/man/man1/eggs.1.gz"
+  # Fix paths for node modules
+  find node_modules -type f -print0 | xargs --null sed -i \
+    "s#${srcdir}/${pkgname}-${pkgver}/#/usr/lib/eggs/#"
 
-	install -Dm644 "assets/${pkgname}.desktop" -t "${pkgdir}/usr/share/applications/"
-	install -Dm644 assets/eggs.png -t "${pkgdir}/usr/share/pixmaps/"
+  # Install documentation
+  install -Dm644 README.md -t "${pkgdir}/usr/share/doc/${pkgname}/"
+
+  # Symlink executable
+  install -d "${pkgdir}/usr/bin"
+  ln -s "/usr/lib/${pkgname}/bin/run" "${pkgdir}/usr/bin/eggs"
+
+  # Install shell completion files
+  install -d "${pkgdir}/usr/share/bash-completion/completions"
+  mv "${pkgdir}/usr/lib/${pkgname}/scripts/eggs.bash" \
+    "${pkgdir}/usr/share/bash-completion/completions/"
+  install -d "${pkgdir}/usr/share/zsh/functions/Completion/Zsh/"
+  mv "${pkgdir}/usr/lib/${pkgname}/scripts/_eggs" \
+    "${pkgdir}/usr/share/zsh/functions/Completion/Zsh/"
+
+  # Install man page
+  install -Dm644 manpages/doc/man/eggs.1.gz -t "${pkgdir}/usr/share/man/man1/"
+
+  # Install desktop file
+  install -Dm644 "assets/${pkgname}.desktop" -t "${pkgdir}/usr/share/applications/"
+
+  # Install icon
+  install -Dm644 assets/eggs.png -t "${pkgdir}/usr/share/pixmaps/"
 }
-
