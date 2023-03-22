@@ -18,8 +18,6 @@ depends=('arch-install-scripts' 'dosfstools' 'erofs-utils' 'findutils' 'grub'
 optdepends=('bash-completion: enable eggs commands automatic completion'
             'calamares: system installer GUI')
 makedepends=('git' 'pnpm')
-conflicts=('penguins-eggs-dev')
-replaces=('penguins-eggs-dev')
 options=('!strip')
 _commit=0f116f37fe57961cdfa1865c4e9b6d1d09314b99  # v9.4.2
 source=("git+https://github.com/pieroproietti/penguins-eggs.git#commit=${_commit}")
