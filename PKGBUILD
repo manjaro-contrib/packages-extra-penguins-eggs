@@ -20,7 +20,7 @@ optdepends=('bash-completion: eggs autocomplete'
             'calamares: system installer GUI')
 makedepends=('git' 'pnpm')
 options=('!strip')
-_commit=0f116f37fe57961cdfa1865c4e9b6d1d09314b99  # v9.4.2
+_commit=8e0b74e52a8bd4521a8e43ae19c7f218cdf35ade  # v9.4.2 current
 source=("git+https://github.com/pieroproietti/penguins-eggs.git#commit=${_commit}")
 sha256sums=('SKIP')
 
@@ -39,7 +39,7 @@ build() {
 package() {
   cd "${srcdir}/${pkgname}"
   install -Dm644 package.json -t "${pkgdir}/usr/lib/${pkgname}/"
-  cp -r addons assets bin conf dist ipxe node_modules mkinitcpio scripts \
+  cp -r .oclif.manifest.json addons assets bin conf ipxe dist mkinitcpio node_modules scripts \
     "${pkgdir}/usr/lib/${pkgname}/"
 
   # Fix permissions
