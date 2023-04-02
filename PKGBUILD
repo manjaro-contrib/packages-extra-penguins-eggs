@@ -5,6 +5,7 @@
 
 pkgname=penguins-eggs
 pkgver=9.4.4
+pkgrel=1
 _commit=91e638f548070b37e893cda01238a0ed01d500ee  # v9.4.4
 pkgdesc="A console tool that allows you to remaster your system and redistribute it as live images on USB sticks or via PXE"
 arch=('any')
@@ -20,7 +21,6 @@ optdepends=('bash-completion: eggs autocomplete'
             'calamares: system installer GUI')
 makedepends=('git' 'pnpm')
 options=('!strip')
-_commit=302b2ece198f301ca946adbe0b19d96373a5c4cb  # v9.4.3 Manjaro Talos
 source=("git+https://github.com/pieroproietti/penguins-eggs.git#commit=${_commit}")
 sha256sums=('SKIP')
 
