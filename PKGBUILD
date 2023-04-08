@@ -4,9 +4,9 @@
 # Contributor: osiixy <osiixy at gmail dot com>
 
 pkgname=penguins-eggs
-pkgver=9.4.4
+pkgver=9.4.5
 pkgrel=1
-_commit=91e638f548070b37e893cda01238a0ed01d500ee  # v9.4.4
+_commit=c2dec814c5b6ff209dd19ccfc028641e6267d693  # v9.4.5
 pkgdesc="A console tool that allows you to remaster your system and redistribute it as live images on USB sticks or via PXE"
 arch=('any')
 url="https://penguins-eggs.net"
