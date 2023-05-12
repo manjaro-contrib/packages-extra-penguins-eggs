@@ -4,13 +4,13 @@
 # Contributor: osiixy <osiixy at gmail dot com>
 
 pkgname=penguins-eggs
-pkgver=9.4.9
+pkgver=9.4.10
 pkgrel=1
 pkgdesc="A console tool that allows you to remaster your system and redistribute it as live images on USB sticks or via PXE"
 arch=('any')
 url="https://penguins-eggs.net"
 license=('GPL2')
-depends=('arch-install-scripts' 'dosfstools'  'erofs-utils'  'findutils' 'grub'
+depends=('arch-install-scripts' 'dosfstools'  'erofs-utils' 'findutils' 'grub'
          'jq' 'libarchive' 'libisoburn' 'lsb-release' 'lvm2' 'manjaro-tools-iso'
          'mkinitcpio-nfs-utils' 'mtools' 'nbd' 'nodejs' 'pacman-contrib' 'parted'
          'procps-ng' 'pv' 'python' 'rsync' 'squashfs-tools' 'sshfs' 'syslinux'
@@ -20,7 +20,7 @@ optdepends=('bash-completion: eggs autocomplete'
             'calamares: system installer GUI')
 makedepends=('git' 'nodejs>=16' 'pnpm')
 options=('!strip')
-_commit=5905cdca615d44c3db7309d9e106601fc42919ee  # v9.4.9
+_commit=38c0ff4c66c2a7d033abd45c3a01b6f629e776cb  # v9.4.10
 source=("git+https://github.com/pieroproietti/penguins-eggs.git#commit=${_commit}")
 sha256sums=('SKIP')
 
