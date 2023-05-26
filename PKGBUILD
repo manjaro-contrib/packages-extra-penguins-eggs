@@ -31,7 +31,7 @@ pkgver() {
 
 build() {
   cd "${srcdir}/${pkgname}"
-  pnpm config set cache-dir "$srcdir/pnpm-cache"
+  pnpm config set store-dir "$srcdir/pnpm-store"
   pnpm i
   pnpm build
 }
