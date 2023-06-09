@@ -4,7 +4,7 @@
 # Contributor: osiixy <osiixy at gmail dot com>
 
 pkgname=penguins-eggs
-pkgver=9.4.16
+pkgver=9.4.17
 pkgrel=1
 pkgdesc="A console tool that allows you to remaster your system and redistribute it as live images on USB sticks or via PXE"
 arch=('any')
@@ -20,7 +20,7 @@ optdepends=('bash-completion: eggs autocomplete'
             'calamares: system installer GUI')
 makedepends=('git' 'nodejs>=16' 'pnpm')
 options=('!strip')
-_commit=4c66c0160adee1f535a5cd0b7f53293476b79856  # v9.4.16
+_commit=e59cb0cca5422489988495c3b2f355c03cfcd6fc  # v9.4.17
 source=("git+https://github.com/pieroproietti/penguins-eggs.git#commit=${_commit}")
 sha256sums=('SKIP')
 
@@ -31,7 +31,7 @@ pkgver() {
 
 build() {
   cd "${srcdir}/${pkgname}"
-  pnpm config set store-dir "$srcdir/pnpm-store"
+  export PNPM_HOME="$srcdir/pnpm-home"
   pnpm i
   pnpm build
 }
