@@ -4,7 +4,7 @@
 # Contributor: osiixy <osiixy at gmail dot com>
 
 pkgname=penguins-eggs
-pkgver=9.5.13
+pkgver=9.5.14
 pkgrel=1
 pkgdesc="A console tool that allows you to remaster your system and redistribute it as live images on USB sticks or via PXE"
 arch=('any')
@@ -15,18 +15,18 @@ depends=('arch-install-scripts' 'dosfstools' 'erofs-utils' 'findutils' 'grub'
          'mkinitcpio-nfs-utils' 'mtools' 'nbd' 'nodejs' 'pacman-contrib' 'parted'
          'procps-ng' 'pv' 'python' 'rsync' 'squashfs-tools' 'sshfs' 'syslinux'
          'xdg-utils')
+makedepends=('git' 'nodejs>=16' 'pnpm')
 optdepends=('bash-completion: eggs autocomplete'
             'zsh-completions: eggs autocomplete'
             'calamares: system installer GUI')
-makedepends=('git' 'nodejs>=16' 'pnpm')
 options=('!strip')
-_commit=9cb143646e688e9bb12541d116ab71fb412d40d9  # v9.5.13
+_commit=0da82bdd89b30719550049b94c8394d08c5eace2  # v9.5.14
 source=("git+https://github.com/pieroproietti/penguins-eggs.git#commit=${_commit}")
 sha256sums=('SKIP')
 
 pkgver() {
   cd "${srcdir}/${pkgname}"
-  grep 'version' package.json | awk 'NR==1 {print $2 }' | awk -F '"' '{print $2}'
+  node -pe "require('./package.json').version"
 }
 
 build() {
