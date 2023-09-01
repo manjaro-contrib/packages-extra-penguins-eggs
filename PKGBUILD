@@ -4,7 +4,7 @@
 # Contributor: osiixy <osiixy at gmail dot com>
 
 pkgname=penguins-eggs
-pkgver=9.5.20
+pkgver=9.5.21
 pkgrel=1
 pkgdesc="A console tool that allows you to remaster your system and redistribute it as live images on USB sticks or via PXE"
 arch=('any')
@@ -20,7 +20,7 @@ optdepends=('bash-completion: eggs autocomplete'
             'zsh-completions: eggs autocomplete'
             'calamares: system installer GUI')
 options=('!strip')
-_commit=3063b19c999bb96bfe8b6d122cb88f151dce9493  # v9.5.19
+_commit=de85757d8f264e851b4f3ecfce3a20319a0820b3  # v9.5.21
 source=("git+https://github.com/pieroproietti/penguins-eggs.git#commit=${_commit}")
 sha256sums=('SKIP')
 
@@ -46,7 +46,7 @@ package() {
   chown root:root "${pkgdir}/usr/lib/${pkgname}/"{dist,node_modules}
 
   # Package contains reference to $srcdir
-  find "${pkgdir}/usr/lib/${pkgname}" -name package.json -print0 | xargs -r -0 sed -i '/_where/d'
+  find "$pkgdir" -name package.json -print0 | xargs -r -0 sed -i '/_where/d'
 
   local tmppackage="$(mktemp)"
   local pkgjson="${pkgdir}/usr/lib/${pkgname}/package.json"
