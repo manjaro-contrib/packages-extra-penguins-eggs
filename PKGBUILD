@@ -20,7 +20,7 @@ optdepends=('bash-completion: eggs autocomplete'
             'zsh-completions: eggs autocomplete'
             'calamares: system installer GUI')
 options=('!strip')
-_commit=9da87a8204f33e014e99205f4e5946f9a6a11133  # v9.6.2
+_commit=9da87a8204f33e014e99205f4e5946f9a6a11133  # v9.6.3
 source=("git+https://github.com/pieroproietti/penguins-eggs.git#commit=${_commit}")
 sha256sums=('SKIP')
 
