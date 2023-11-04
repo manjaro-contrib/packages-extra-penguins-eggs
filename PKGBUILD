@@ -4,7 +4,7 @@
 # Contributor: osiixy <osiixy at gmail dot com>
 
 pkgname=penguins-eggs
-pkgver=9.6.9
+pkgver=9.6.10
 pkgrel=1
 pkgdesc="A console tool that allows you to remaster your system and redistribute it as live images on USB sticks or via PXE"
 arch=('any')
@@ -20,24 +20,24 @@ optdepends=('bash-completion: eggs autocomplete'
             'zsh-completions: eggs autocomplete'
             'calamares: system installer GUI')
 options=('!strip')
-_commit=f9a6ab3a35be2a9dd4d32ca5dd856e91ca3a442a  # v9.6.9
+_commit=fd2cb2997eda072a1b44c0c347ac3e81924e464d  # v9.6.10
 source=("git+https://github.com/pieroproietti/penguins-eggs.git#commit=${_commit}")
 sha256sums=('SKIP')
 
 pkgver() {
-  cd "${srcdir}/${pkgname}"
+  cd "${pkgname}"
   node -pe "require('./package.json').version"
 }
 
 build() {
-  cd "${srcdir}/${pkgname}"
+  cd "${pkgname}"
   export PNPM_HOME="$srcdir/pnpm-home"
   pnpm i
   pnpm build
 }
 
 package() {
-  cd "${srcdir}/${pkgname}"
+  cd "${pkgname}"
   install -Dm644 .oclif.manifest.json package.json -t "${pkgdir}/usr/lib/${pkgname}/"
   cp -r addons assets bin conf ipxe dist mkinitcpio node_modules scripts \
     "${pkgdir}/usr/lib/${pkgname}/"
