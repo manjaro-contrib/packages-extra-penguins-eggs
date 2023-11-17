@@ -5,7 +5,7 @@
 
 pkgname=penguins-eggs
 pkgver=9.6.14
-pkgrel=1
+pkgrel=2
 pkgdesc="A console tool that allows you to remaster your system and redistribute it as live images on USB sticks or via PXE"
 arch=('any')
 url="https://penguins-eggs.net"
@@ -27,6 +27,13 @@ sha256sums=('SKIP')
 pkgver() {
   cd "${pkgname}"
   node -pe "require('./package.json').version"
+}
+
+prepare() {
+  cd "${pkgname}"
+
+  # fix typo
+  git cherry-pick -n acdcfac17d872402dd4a6f32da9279fbc77b3c13
 }
 
 build() {
