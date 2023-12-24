@@ -15,7 +15,7 @@ depends=(
   'arch-install-scripts'
   'dosfstools'
   'erofs-utils'
-  'findutils' 
+  'findutils'
   'grub'
   'jq'
   'libarchive'
