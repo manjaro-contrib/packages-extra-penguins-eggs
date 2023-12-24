@@ -1,10 +1,11 @@
 # Maintainer: Stefano Capitani <stefano_at_manjaro_org>
+# Maintainer: Mark Wagie <mark at manjaro dot org>
 # Contributor: Piero Proietti <piero.proietti_at_gmail.com>
 # Contributor: Muflone https://www.muflone.com/contacts/english/
 # Contributor: osiixy <osiixy at gmail dot com>
 
 pkgname=penguins-eggs
-pkgver=9.6.21
+pkgver=9.6.22
 pkgrel=1
 pkgdesc="A console tool that allows you to remaster your system and redistribute it as live images on USB sticks or via PXE"
 arch=('any')
@@ -20,7 +21,7 @@ optdepends=('bash-completion: eggs autocomplete'
             'zsh-completions: eggs autocomplete'
             'calamares: system installer GUI')
 options=('!strip')
-_commit=03de84b72910a3e543c2402366e8cf0c8a80bbe6  # v9.6.21
+_commit=3dfdcd1fbc0dba8b960636466529cff4823a870e  # v9.6.22
 source=("git+https://github.com/pieroproietti/penguins-eggs.git#commit=${_commit}")
 sha256sums=('SKIP')
 
@@ -31,9 +32,6 @@ pkgver() {
 
 prepare() {
   cd "${pkgname}"
-
-  # bump version
-  sed -i 's/"version": "9.6.18"/"version": "9.6.21"/g' package.json
 }
 
 build() {
