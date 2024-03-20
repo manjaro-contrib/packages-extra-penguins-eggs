@@ -5,7 +5,7 @@
 # Contributor: osiixy <osiixy at gmail dot com>
 
 pkgname=penguins-eggs
-pkgver=9.6.37
+pkgver=9.6.38
 pkgrel=1
 pkgdesc="A console tool that allows you to remaster your system and redistribute it as live images on USB sticks or via PXE"
 arch=('any')
@@ -45,7 +45,7 @@ optdepends=(
   'calamares: system installer GUI'
 )
 options=('!strip')
-_commit=5a52066073b206613a1295abb52d99b8406f5060  # v9.6.37
+_commit=c7fadbc9e785f4dd754289708a3c335587e96f64  # v9.6.38
 source=("git+https://github.com/pieroproietti/penguins-eggs.git#commit=${_commit}")
 sha256sums=('SKIP')
 
