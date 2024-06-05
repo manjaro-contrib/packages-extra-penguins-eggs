@@ -5,7 +5,7 @@
 # Contributor: osiixy <osiixy at gmail dot com>
 
 pkgname=penguins-eggs
-pkgver=9.7.5
+pkgver=10.0.3
 pkgrel=1
 pkgdesc="A console tool that allows you to remaster your system and redistribute it as live images on USB sticks or via PXE"
 arch=('any')
@@ -45,9 +45,9 @@ optdepends=(
   'calamares: system installer GUI'
 )
 options=('!strip')
-_commit=c91785dda3018b25f5e1207761a1d11b9a773a8e  # v9.7.5
+_commit=513b4f65343d2f161b9b1e3ceaa558da13166376  # v10.0.3
 source=("git+https://github.com/pieroproietti/penguins-eggs.git#commit=${_commit}")
-sha256sums=('d0af4444d855e60fd865de297174b683e1abff8a6cf3f8f06a03d512a3e668d1')
+sha256sums=('04727214c29664bfd5683b9317325093a8c25b8f23d7b1d08302052a0875bd20')
 
 pkgver() {
   cd "${pkgname}"
@@ -92,7 +92,7 @@ package() {
 
   # Symlink executable
   install -d "${pkgdir}/usr/bin"
-  ln -s "/usr/lib/${pkgname}/bin/run" "${pkgdir}/usr/bin/eggs"
+  ln -s "/usr/lib/${pkgname}/bin/run.js" "${pkgdir}/usr/bin/eggs"
 
   # Install shell completion files
   install -d "${pkgdir}/usr/share/bash-completion/completions"
