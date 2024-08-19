@@ -5,7 +5,7 @@
 # Contributor: osiixy <osiixy at gmail dot com>
 
 pkgname=penguins-eggs
-pkgver=10.0.26
+pkgver=10.0.28
 pkgrel=1
 pkgdesc="A console tool that allows you to remaster your system and redistribute it as live images on USB sticks or via PXE"
 arch=('any')
@@ -38,72 +38,87 @@ depends=(
   'syslinux'
   'xdg-utils'
 )
-makedepends=('git' 'pnpm')
+makedepends=(
+  'git'
+  'pnpm'
+)
 optdepends=(
   'bash-completion: eggs autocomplete'
-  'zsh-completions: eggs autocomplete'
   'calamares: system installer GUI'
+  'zsh-completions: eggs autocomplete'
 )
 options=('!strip')
-_commit=d5e6c1ab85e05db89f116a68d512ce291e332913  # v10.0.26
+_commit=fd3c9a5ea6ca44508af380b2753fc8889e161374  # v10.0.28
 source=("git+https://github.com/pieroproietti/penguins-eggs.git#commit=${_commit}")
-sha256sums=('4bc6d9ef1b13c1cd4783652577cfab8e4eef1b83f08784df0df3f8543b8daaf6')
+sha256sums=('85964c801d8f9fb66c1841ca81e1fd32a1f12b1aa78233c63a13fced8d7f8902')
 
 pkgver() {
-  cd "${pkgname}"
+  cd "$pkgname"
   node -pe "require('./package.json').version"
 }
 
 build() {
-  cd "${pkgname}"
+  cd "$pkgname"
   export PNPM_HOME="$srcdir/pnpm-home"
   pnpm i
   pnpm build
 }
 
 package() {
-  cd "${pkgname}"
-  install -Dm644 .oclif.manifest.json package.json -t "${pkgdir}/usr/lib/${pkgname}/"
-  cp -r addons assets bin conf ipxe dist mkinitcpio node_modules scripts \
-    "${pkgdir}/usr/lib/${pkgname}/"
+  cd "$pkgname"
+  install -Dm644 .oclif.manifest.json package.json -t "$pkgdir/usr/lib/$pkgname/"
+  cp -r addons assets bin conf ipxe dracut dist eui mkinitcpio mkinitfs node_modules scripts \
+    "$pkgdir/usr/lib/$pkgname/"
 
   # Fix permissions
-  chown root:root "${pkgdir}/usr/lib/${pkgname}/"{dist,node_modules}
+  chown root:root "$pkgdir/usr/lib/$pkgname/"{dist,node_modules}
 
   # Package contains reference to $srcdir
   find "$pkgdir" -name package.json -print0 | xargs -r -0 sed -i '/_where/d'
 
   local tmppackage="$(mktemp)"
-  local pkgjson="${pkgdir}/usr/lib/${pkgname}/package.json"
+  local pkgjson="$pkgdir/usr/lib/$pkgname/package.json"
   jq '.|=with_entries(select(.key|test("_.+")|not))' "${pkgjson}" > "${tmppackage}"
   mv "${tmppackage}" "${pkgjson}"
   chmod 644 "${pkgjson}"
 
   # Fix paths for node modules
   find node_modules -type f -print0 | xargs --null sed -i \
-    "s#${srcdir}/${pkgname}-${pkgver}/#/usr/lib/eggs/#"
+    "s#${srcdir}/$pkgname-${pkgver}/#/usr/lib/eggs/#"
 
   # Install documentation
-  install -Dm644 README.md -t "${pkgdir}/usr/share/doc/${pkgname}/"
-
-  # Symlink executable
-  install -d "${pkgdir}/usr/bin"
-  ln -s "/usr/lib/${pkgname}/bin/run.js" "${pkgdir}/usr/bin/eggs"
+  install -Dm644 README.md -t "$pkgdir/usr/share/doc/$pkgname/"
 
   # Install shell completion files
-  install -d "${pkgdir}/usr/share/bash-completion/completions"
-  mv "${pkgdir}/usr/lib/${pkgname}/scripts/eggs.bash" \
-    "${pkgdir}/usr/share/bash-completion/completions/"
-  install -d "${pkgdir}/usr/share/zsh/functions/Completion/Zsh/"
-  mv "${pkgdir}/usr/lib/${pkgname}/scripts/_eggs" \
-    "${pkgdir}/usr/share/zsh/functions/Completion/Zsh/"
+  install -d "$pkgdir/usr/share/bash-completion/completions"
+  mv "$pkgdir/usr/lib/$pkgname/scripts/eggs.bash" \
+    "$pkgdir/usr/share/bash-completion/completions/"
+  install -d "$pkgdir/usr/share/zsh/functions/Completion/Zsh/"
+  mv "$pkgdir/usr/lib/$pkgname/scripts/_eggs" \
+    "$pkgdir/usr/share/zsh/functions/Completion/Zsh/"
 
   # Install man page
-  install -Dm644 manpages/doc/man/eggs.1.gz -t "${pkgdir}/usr/share/man/man1/"
+  install -Dm644 manpages/doc/man/eggs.1.gz -t "$pkgdir/usr/share/man/man1/"
 
   # Install desktop file
-  install -Dm644 "assets/${pkgname}.desktop" -t "${pkgdir}/usr/share/applications/"
+  install -Dm644 "assets/$pkgname.desktop" -t "$pkgdir/usr/share/applications/"
 
   # Install icon
-  install -Dm644 assets/eggs.png -t "${pkgdir}/usr/share/pixmaps/"
+  install -Dm644 assets/eggs.png -t "$pkgdir/usr/share/pixmaps/"
+
+  # Script permissions
+  chmod +x "$pkgdir/usr/lib/$pkgname/scripts/mom.sh"
+  chmod +x "$pkgdir/usr/lib/$pkgname/eui/eui-create-image.sh"
+  chmod +x "$pkgdir/usr/lib/$pkgname/eui/eui-start.sh"
+  chmod 0400 "$pkgdir/usr/lib/$pkgname/eui/eui-users"
+
+  # Symlink executable
+  install -d "$pkgdir/usr/bin"
+  ln -s "/usr/lib/$pkgname/bin/run.js" "$pkgdir/usr/bin/eggs"
+
+  # Symlink to adapt
+  ln -s "/usr/lib/$pkgname/addons/eggs/adapt/bin/adapt" "$pkgdir/usr/bin/"
+
+  # Symlink to love
+#  ln -s "/usr/lib/$pkgname/scripts/love" "$pkgdir/usr/bin/love"
 }
