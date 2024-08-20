@@ -5,7 +5,7 @@
 # Contributor: osiixy <osiixy at gmail dot com>
 
 pkgname=penguins-eggs
-pkgver=10.0.28
+pkgver=10.0.29
 pkgrel=1
 pkgdesc="A console tool that allows you to remaster your system and redistribute it as live images on USB sticks or via PXE"
 arch=('any')
@@ -48,9 +48,9 @@ optdepends=(
   'zsh-completions: eggs autocomplete'
 )
 options=('!strip')
-_commit=fd3c9a5ea6ca44508af380b2753fc8889e161374  # v10.0.28
+_commit=17ecf8d67550c6be3b2c2c01a999aa54511181ba  # v10.0.29
 source=("git+https://github.com/pieroproietti/penguins-eggs.git#commit=${_commit}")
-sha256sums=('85964c801d8f9fb66c1841ca81e1fd32a1f12b1aa78233c63a13fced8d7f8902')
+sha256sums=('71d9f0497f445e7a2d4944c1db57c278d733cd017fec92487a25a120e7741f5f')
 
 pkgver() {
   cd "$pkgname"
@@ -118,7 +118,4 @@ package() {
 
   # Symlink to adapt
   ln -s "/usr/lib/$pkgname/addons/eggs/adapt/bin/adapt" "$pkgdir/usr/bin/"
-
-  # Symlink to love
-#  ln -s "/usr/lib/$pkgname/scripts/love" "$pkgdir/usr/bin/love"
 }
