@@ -5,7 +5,7 @@
 # Contributor: osiixy <osiixy at gmail dot com>
 
 pkgname=penguins-eggs
-pkgver=10.0.42
+pkgver=10.0.43
 pkgrel=1
 pkgdesc="A console tool that allows you to remaster your system and redistribute it as live images on USB sticks or via PXE"
 arch=('any')
@@ -48,9 +48,9 @@ optdepends=(
   'zsh-completions: eggs autocomplete'
 )
 options=('!strip')
-_commit=73cd53b7ff437e6f1f7b53a19dd93ec1ef47f8b2 # v10.0.42
+_commit=4b50453dd7f184a46f9e19430e75ebf9a05190a9 # v10.0.43
 source=("git+https://github.com/pieroproietti/penguins-eggs.git#commit=${_commit}")
-sha256sums=('5c902d733c7522803d26f770f6ccc92b4da98b54569f42b0b7e124af59fe8685')
+sha256sums=('0d63f7ad3f8b782af49917f0dadea3bc41ed2809c0818157282632d388ef3529')
 
 pkgver() {
   cd "$pkgname"
@@ -67,7 +67,7 @@ build() {
 package() {
   cd "$pkgname"
   install -Dm644 .oclif.manifest.json package.json -t "$pkgdir/usr/lib/$pkgname/"
-  cp -r addons assets bin conf ipxe dracut dist eui mkinitcpio mkinitfs node_modules scripts \
+  cp -r addons assets bin conf ipxe dracut dist eui mkinitcpio mkinitfs node_modules scripts syslinux \
     "$pkgdir/usr/lib/$pkgname/"
 
   # Fix permissions
@@ -75,16 +75,6 @@ package() {
 
   # Package contains reference to $srcdir
   find "$pkgdir" -name package.json -print0 | xargs -r -0 sed -i '/_where/d'
-
-  local tmppackage="$(mktemp)"
-  local pkgjson="$pkgdir/usr/lib/$pkgname/package.json"
-  jq '.|=with_entries(select(.key|test("_.+")|not))' "${pkgjson}" > "${tmppackage}"
-  mv "${tmppackage}" "${pkgjson}"
-  chmod 644 "${pkgjson}"
-
-  # Fix paths for node modules
-  find node_modules -type f -print0 | xargs --null sed -i \
-    "s#${srcdir}/$pkgname-${pkgver}/#/usr/lib/eggs/#"
 
   # Install documentation
   install -Dm644 README.md -t "$pkgdir/usr/share/doc/$pkgname/"
