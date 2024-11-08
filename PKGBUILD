@@ -1,5 +1,5 @@
-# Maintainer: Mark Wagie <mark at manjaro dot org>
-# Contributor: Stefano Capitani <stefano_at_manjaro_org>
+# Maintainer: Stefano Capitani <stefano_at_manjaro_org>
+# Contributor: Mark Wagie <mark at manjaro dot org>
 # Contributor: Piero Proietti <piero.proietti_at_gmail.com>
 # Contributor: Muflone https://www.muflone.com/contacts/english/
 # Contributor: osiixy <osiixy at gmail dot com>
