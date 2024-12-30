@@ -5,8 +5,8 @@
 # Contributor: osiixy <osiixy at gmail dot com>
 
 pkgname=penguins-eggs
-pkgver=10.0.56
-pkgrel=4
+pkgver=10.0.57
+pkgrel=2
 pkgdesc="A console tool that allows you to remaster your system and redistribute it as live images on USB sticks or via PXE"
 arch=('any')
 url="https://penguins-eggs.net"
@@ -48,9 +48,9 @@ optdepends=(
   'zsh-completions: eggs autocomplete'
 )
 options=('!strip')
-_commit=0f9ef35e657d3b918d750517c7794adee3bc0dad # v10.0.56
+_commit=a5a46612ec2643ff2d7f3feb8bf71e21f1b297c6 # v10.0.57
 source=("git+https://github.com/pieroproietti/penguins-eggs.git#commit=${_commit}")
-sha256sums=('2de095cfd83d7cc47c48e8e28717b9e1c5ae45a327a745b6daf2f2e903057e04')
+sha256sums=('cd0595d3f38f6eab7837bb48162b95839f0042848a36165e5ffcd25b88c4805f')
 
 pkgver() {
   cd "$pkgname"
