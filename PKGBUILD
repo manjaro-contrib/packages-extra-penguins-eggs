@@ -67,7 +67,7 @@ build() {
 package() {
   cd "$pkgname"
   install -Dm644 .oclif.manifest.json package.json -t "$pkgdir/usr/lib/$pkgname/"
-  cp -r addons assets bin conf ipxe dracut dist eui mkinitcpio mkinitfs node_modules scripts syslinux \
+  cp -r addons assets bin bootloaders conf dracut dist eui mkinitcpio node_modules scripts \
     "$pkgdir/usr/lib/$pkgname/"
 
   # Fix permissions
