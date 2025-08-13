@@ -49,8 +49,10 @@ optdepends=(
 )
 options=('!strip')
 _commit=f3eca5433161d4e18f2459db3d6f67fbba73d3ea # v25.8.10
-source=("git+https://github.com/pieroproietti/penguins-eggs.git#commit=${_commit}")
-sha256sums=('c09bc394900cbf165fb7d4637e4a867bc96d5c595fa5b6d6d755df196a691e21')
+source=("git+https://github.com/pieroproietti/penguins-eggs.git#commit=${_commit}"
+	bootloaders.tar.gz::https://github.com/pieroproietti/penguins-eggs/releases/download/v25.8.10/bootloaders.tar.gz)
+sha256sums=('c09bc394900cbf165fb7d4637e4a867bc96d5c595fa5b6d6d755df196a691e21'
+            'b87679fc108d86b406157bccc97a28e1d950afc6ab24d7da7c7cbebacb9690c4')
 
 pkgver() {
   cd "$pkgname"
@@ -67,8 +69,9 @@ build() {
 package() {
   cd "$pkgname"
   install -Dm644 .oclif.manifest.json package.json -t "$pkgdir/usr/lib/$pkgname/"
-  cp -r addons assets bin bootloaders conf dracut dist eui mkinitcpio node_modules scripts \
+  cp -r addons assets bin conf dracut dist eui mkinitcpio node_modules scripts \
     "$pkgdir/usr/lib/$pkgname/"
+  cp -r "$srcdir/bootloaders" "$pkgdir/usr/lib/$pkgname/"
 
   # Fix permissions
   chown root:root "$pkgdir/usr/lib/$pkgname/"{dist,node_modules}
