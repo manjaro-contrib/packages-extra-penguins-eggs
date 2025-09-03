@@ -5,7 +5,7 @@
 # Contributor: osiixy <osiixy at gmail dot com>
 
 pkgname=penguins-eggs
-pkgver=25.8.10
+pkgver=25.9.2
 pkgrel=1
 pkgdesc="A console tool that allows you to remaster your system and redistribute it as live images on USB sticks or via PXE"
 arch=('any')
@@ -48,11 +48,11 @@ optdepends=(
   'zsh-completions: eggs autocomplete'
 )
 options=('!strip')
-_commit=f3eca5433161d4e18f2459db3d6f67fbba73d3ea # v25.8.10
+_commit=824b27f9de8809b66c2d60a9b8a4d8cca4d2fd63 # v25.9.2
 source=("git+https://github.com/pieroproietti/penguins-eggs.git#commit=${_commit}"
-	bootloaders.tar.gz::https://github.com/pieroproietti/penguins-eggs/releases/download/v25.8.10/bootloaders.tar.gz)
-sha256sums=('c09bc394900cbf165fb7d4637e4a867bc96d5c595fa5b6d6d755df196a691e21'
-            'b87679fc108d86b406157bccc97a28e1d950afc6ab24d7da7c7cbebacb9690c4')
+	bootloaders.tar.gz::https://github.com/pieroproietti/penguins-eggs/releases/download/v$pkgver/bootloaders.tar.gz)
+sha256sums=('330e465ac0730414d48ba72f4c3e0c52ed1dde93672febfa695ef694a884502e'
+            '9d7080e2edc043c4d54ba55aa6c13608be4cfb8aaa182cfdc29d304ef8f80fab')
 
 pkgver() {
   cd "$pkgname"
