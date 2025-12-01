@@ -5,7 +5,7 @@
 # Contributor: osiixy <osiixy at gmail dot com>
 
 pkgname=penguins-eggs
-pkgver=25.11.21
+pkgver=25.11.29
 pkgrel=1
 _bootloadersver=25.9.8
 pkgdesc="A console tool that allows you to remaster your system and redistribute it as live images on USB sticks or via PXE"
@@ -51,7 +51,7 @@ optdepends=(
 options=('!strip')
 source=("git+https://github.com/pieroproietti/penguins-eggs.git#tag=v$pkgver"
   	"bootloaders.tar.gz::https://github.com/pieroproietti/penguins-bootloaders/releases/download/v$_bootloadersver/bootloaders.tar.gz")
-sha256sums=('0b9e5433a697503f62fbe22486f24cd6cb496d0b09d14ce7c8fb7aea3e4f94f7'
+sha256sums=('3551e9171adf64592773f313c8548f67635ef437f7f621ba7063af869f310c55'
             'c5dcfd82a8e65160af5c93365f07776a00d44e8b531d6641f4cadbbe7b4b5baf')
 
 pkgver() {
