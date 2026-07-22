@@ -1,114 +1,83 @@
-# Maintainer: Stefano Capitani <stefano_at_manjaro_org>
-# Contributor: Mark Wagie <mark at manjaro dot org>
-# Contributor: Piero Proietti <piero.proietti_at_gmail.com>
-# Contributor: Muflone https://www.muflone.com/contacts/english/
-# Contributor: osiixy <osiixy at gmail dot com>
+# Maintainer: Stefano Capitani <stefano@manjaro.org>
+# Contributor: Piero Proietti <piero.proietti@gmail.com>
 
 pkgname=penguins-eggs
-pkgver=26.5.12
+pkgver=26.7.18
 pkgrel=1
-_bootloadersver=25.9.8
-pkgdesc="A console tool that allows you to remaster your system and redistribute it as live images on USB sticks or via PXE"
-arch=('any')
+pkgdesc="penguins-eggs universal Linux remastering"
+arch=('x86_64')
 url="https://penguins-eggs.net"
-license=('GPL-2.0-or-later')
+license=('GPL3')
+source=("$pkgname-$pkgver.tar.gz::https://github.com/pieroproietti/penguins-eggs/archive/refs/tags/v$pkgver.tar.gz")
+sha256sums=('48fd92b9c145b654993dac25bef1adf0fbe377279438a917a79a6d88cb167832')
+options=('!debug')
 depends=(
-  'arch-install-scripts'
-  'dosfstools'
-  'erofs-utils'
-  'findutils'
-  'grub'
-  'jq'
-  'libarchive'
-  'libisoburn'
-  'lsb-release'
-  'lvm2'
-  'manjaro-tools-iso'
-  'mkinitcpio-nfs-utils'
-  'mtools'
-  'nbd'
-  'nodejs'
-  'pacman-contrib'
-  'parted'
-  'procps-ng'
-  'pv'
-  'python'
-  'rsync'
-  'squashfs-tools'
-  'sshfs'
-  'syslinux'
-  'xdg-utils'
+    'manjaro-tools-iso'
+    'arch-install-scripts'
+    'bash-completion'
+    'btrfs-progs'
+    'curl'
+    'dosfstools'
+    'e2fsprogs'
+    'efibootmgr'
+    'glibc'
+    'gnupg'
+    'grub'
+    'libarchive'
+    'libisoburn'
+    'mkinitcpio-nfs-utils'
+    'mtools'
+    'nbd'
+    'pv'
+    'rsync'
+    'squashfs-tools'
+    'sudo'
+    'wget'
+    'yq'
+    'qemu-guest-agent'
 )
-makedepends=(
-  'git'
-  'pnpm'
-)
-optdepends=(
-  'bash-completion: eggs autocomplete'
-  'calamares: system installer GUI'
-  'zsh-completions: eggs autocomplete'
-)
-options=('!strip')
-source=("git+https://github.com/pieroproietti/penguins-eggs.git#tag=v$pkgver"
-  	"bootloaders.tar.gz::https://github.com/pieroproietti/penguins-bootloaders/releases/download/v$_bootloadersver/bootloaders.tar.gz")
-sha256sums=('867d8081052167790d450071c1d6d55836ea566b85f94e5b2784c4b6be191ff2'
-            'c5dcfd82a8e65160af5c93365f07776a00d44e8b531d6641f4cadbbe7b4b5baf')
-
-pkgver() {
-  cd "$pkgname"
-  node -pe "require('./package.json').version"
-}
+makedepends=('go' 'make' 'git')
 
 build() {
-  cd "$pkgname"
-  export PNPM_HOME="$srcdir/pnpm-home"
-  pnpm i
-  pnpm build
+    cd "$pkgname-$pkgver"
+
+    export OA_BUILD_DIR="$srcdir/oa-build-dir"
+    export GOFLAGS="-trimpath" # used for remove reference to $srcdir
+
+    # Compiling build_oa + build_coa + docs
+    make build_oa build_coa docs
 }
 
 package() {
-  cd "$pkgname"
-  install -Dm644 .oclif.manifest.json package.json -t "$pkgdir/usr/lib/$pkgname/"
-  cp -r addons assets bin conf dracut dist eui mkinitcpio node_modules scripts \
-    "$pkgdir/usr/lib/$pkgname/"
-  cp -r "$srcdir/bootloaders" "$pkgdir/usr/lib/$pkgname/"
+    cd "$pkgname-$pkgver"
 
-  # Fix permissions
-  chown root:root "$pkgdir/usr/lib/$pkgname/"{dist,node_modules}
+    local build_dir="$srcdir/oa-build-dir"
 
-  # Package contains reference to $srcdir
-  find "$pkgdir" -name package.json -print0 | xargs -r -0 sed -i '/_where/d'
+    # --- binary ---
+    install -Dm755 "$build_dir/oa"  "${pkgdir}/usr/bin/oa"
+    install -Dm755 "$build_dir/coa" "${pkgdir}/usr/bin/coa"
+    ln -s coa "${pkgdir}/usr/bin/eggs"
 
-  # Install documentation
-  install -Dm644 README.md -t "$pkgdir/usr/share/doc/$pkgname/"
+    # --- config ---
+    install -Dm644 coa/pkg/assets/configs/custom.yaml         "${pkgdir}/etc/penguins-eggs.d/custom.yaml"
+    install -Dm644 coa/pkg/assets/configs/custom.exclude.list "${pkgdir}/etc/penguins-eggs.d/custom.exclude.list"
 
-  # Install shell completion files
-  install -d "$pkgdir/usr/share/bash-completion/completions"
-  mv "$pkgdir/usr/lib/$pkgname/scripts/eggs.bash" \
-    "$pkgdir/usr/share/bash-completion/completions/"
-  install -d "$pkgdir/usr/share/zsh/functions/Completion/Zsh/"
-  mv "$pkgdir/usr/lib/$pkgname/scripts/_eggs" \
-    "$pkgdir/usr/share/zsh/functions/Completion/Zsh/"
+    mkdir -p "${pkgdir}/etc/penguins-eggs.d/scripts"
+    cp -a coa/pkg/assets/configs/scripts/. "${pkgdir}/etc/penguins-eggs.d/scripts/"
 
-  # Install man page
-  install -Dm644 manpages/doc/man/eggs.1.gz -t "$pkgdir/usr/share/man/man1/"
+    mkdir -p "${pkgdir}/etc/penguins-eggs.d/brain.d"
+    cp -a coa/brain.d/. "${pkgdir}/etc/penguins-eggs.d/brain.d/"
 
-  # Install desktop file
-  install -Dm644 "assets/$pkgname.desktop" -t "$pkgdir/usr/share/applications/"
+    # --- man page ---
+    for f in "$build_dir"/docs/man/*.1; do
+        [ -e "$f" ] && install -Dm644 "$f" "${pkgdir}/usr/share/man/man1/$(basename "$f")"
+    done
 
-  # Install icon
-  install -Dm644 assets/eggs.png -t "$pkgdir/usr/share/pixmaps/"
-
-  # Script permissions
-  chmod +x "$pkgdir/usr/lib/$pkgname/scripts/mom.sh"
-  chmod +x "$pkgdir/usr/lib/$pkgname/eui/eui-create-image.sh"
-  chmod +x "$pkgdir/usr/lib/$pkgname/eui/eui-start.sh"
-  chmod 0400 "$pkgdir/usr/lib/$pkgname/eui/eui-users"
-
-  # Symlink executable
-  install -d "$pkgdir/usr/bin"
-  ln -s "/usr/lib/$pkgname/bin/run.js" "$pkgdir/usr/bin/eggs"
-
-  # Symlink to adapt
-  ln -s "/usr/lib/$pkgname/addons/eggs/adapt/bin/adapt" "$pkgdir/usr/bin/"
+    # --- completions ---
+    install -Dm644 "$build_dir/docs/completion/coa.bash"  "${pkgdir}/usr/share/bash-completion/completions/coa.bash"
+    install -Dm644 "$build_dir/docs/completion/coa.fish"  "${pkgdir}/usr/share/fish/vendor_completions.d/coa.fish"
+    install -Dm644 "$build_dir/docs/completion/coa.zsh"   "${pkgdir}/usr/share/zsh/vendor-completions/_coa"
+    install -Dm644 "$build_dir/docs/completion/eggs.bash" "${pkgdir}/usr/share/bash-completion/completions/eggs.bash"
+    install -Dm644 "$build_dir/docs/completion/eggs.fish" "${pkgdir}/usr/share/fish/vendor_completions.d/eggs.fish"
+    install -Dm644 "$build_dir/docs/completion/eggs.zsh"  "${pkgdir}/usr/share/zsh/vendor-completions/_eggs"
 }

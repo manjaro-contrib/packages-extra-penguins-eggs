@@ -3,7 +3,6 @@
 
 # But not these files...
 !.gitignore
-!penguins-eggs.install
 !PKGBUILD
 !README.md
 # etc...
