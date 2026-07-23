@@ -12,31 +12,35 @@ source=("$pkgname-$pkgver.tar.gz::https://github.com/pieroproietti/penguins-eggs
 sha256sums=('48fd92b9c145b654993dac25bef1adf0fbe377279438a917a79a6d88cb167832')
 options=('!debug')
 depends=(
-    'manjaro-tools-iso'
     'arch-install-scripts'
-    'bash-completion'
     'btrfs-progs'
     'curl'
     'dosfstools'
     'e2fsprogs'
     'efibootmgr'
-    'glibc'
     'gnupg'
     'grub'
     'libarchive'
     'libisoburn'
-    'mkinitcpio-nfs-utils'
     'mtools'
-    'nbd'
     'pv'
     'rsync'
     'squashfs-tools'
     'sudo'
-    'wget'
     'yq'
-    'qemu-guest-agent'
+    'manjaro-tools-iso'
 )
-makedepends=('go' 'make' 'git')
+makedepends=(
+    'base-devel'
+    'go'
+    'git'
+)
+optdepends=(
+    'bash-completion: for bash shell autocompletion'
+    'mkinitcpio-nfs-utils: for NFS boot support'
+    'nbd: for Network Block Device support'
+    'qemu-guest-agent: useful only if you run the tool inside a QEMU VM'
+)
 
 build() {
     cd "$pkgname-$pkgver"
